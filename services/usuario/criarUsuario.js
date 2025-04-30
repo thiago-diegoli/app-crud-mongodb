@@ -1,13 +1,13 @@
 const API_URL = "http://192.168.56.1:3333";
 
-const createUser = async (name, idade, sexo) => {
+const criarUsuario = async (nome, idade, sexo) => {
   try {
     const response = await fetch(`${API_URL}/add`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ name, idade, sexo }),
+      body: JSON.stringify({ nome, idade, sexo }),
     });
 
     if (!response.ok) {
@@ -16,9 +16,9 @@ const createUser = async (name, idade, sexo) => {
 
     return await response.json();
   } catch (error) {
-    console.error("Falha na requisição:", error);
+    console.error(error);
     throw error;
   }
 };
 
-export default createUser;
+export default criarUsuario;

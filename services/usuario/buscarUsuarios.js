@@ -1,6 +1,6 @@
 const API_URL = "http://192.168.56.1:3333";
 
-const getAllUsers = async () => {
+const buscarUsuarios = async () => {
   try {
     const response = await fetch(`${API_URL}/`);
 
@@ -10,9 +10,9 @@ const getAllUsers = async () => {
 
     return await response.json();
   } catch (error) {
-    console.error("Falha na requisição:", error);
+    console.error(error);
     throw error;
   }
 };
 
-export default getAllUsers;
+export default buscarUsuarios;

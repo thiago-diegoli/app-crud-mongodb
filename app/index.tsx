@@ -6,34 +6,28 @@ import {
   Snackbar,
 } from "react-native-paper";
 
-import UserTable from "../components/UserTable";
-import UserForm from "../components/UserForm";
+import Tabela from "../components/Tabela";
+import Form from "../components/Form";
 
-import getAllUsers from "../services/user/get";
-import createUser from "../services/user/create";
-import updateUser from "../services/user/put";
-import deleteUser from "../services/user/delete";
-
-interface User {
-  _id?: string;
-  name: string;
-  idade: number;
-  sexo: string;
-}
+import buscarUsuarios from "../services/usuario/buscarUsuarios";
+import criarUsuario from "../services/usuario/criarUsuario";
+import atualizarUsuario from "../services/usuario/atualizarUsuario";
+import deletarUsuario from "../services/usuario/deletarUsuario";
+import { Usuario } from "@/types/usuario";
 
 export default function HomePage() {
-  const [users, setUsers] = useState([]);
+  const [usuarios, setUsuarios] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState("");
-  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [selectedUsuario, setSelectedUsuario] = useState<Usuario | null>(null);
   const [isFormVisible, setIsFormVisible] = useState(false);
 
-  const fetchUsers = async () => {
+  const fetchUsuarios = async () => {
     setLoading(true);
     try {
-      const data = await getAllUsers();
-      setUsers(data);
+      const data = await buscarUsuarios();
+      setUsuarios(data);
       setError(null);
     } catch (err) {
       setError("Falha ao carregar usuários");
@@ -44,45 +38,49 @@ export default function HomePage() {
   };
 
   useEffect(() => {
-    fetchUsers();
+    fetchUsuarios();
   }, []);
 
-  const handleAddUser = async (_id: string | undefined, userData: User) => {
+  const adicionar = async (_id: string | undefined, dadosUsuario: Usuario) => {
     try {
-      await createUser(userData.name, userData.idade, userData.sexo);
+      await criarUsuario(
+        dadosUsuario.nome,
+        dadosUsuario.idade,
+        dadosUsuario.sexo
+      );
       setMessage("Usuário adicionado com sucesso!");
-      await fetchUsers();
+      await fetchUsuarios();
       setIsFormVisible(false);
     } catch (err) {
       setError("Erro ao adicionar usuário");
     }
   };
 
-  const handleEditUser = async (id: string | undefined, userData: User) => {
+  const editar = async (id: string | undefined, dadosUsuario: Usuario) => {
     if (!id) return;
     try {
-      await updateUser(id, userData);
+      await atualizarUsuario(id, dadosUsuario);
       setMessage("Usuário atualizado com sucesso!");
-      await fetchUsers();
-      setSelectedUser(null);
+      await fetchUsuarios();
+      setSelectedUsuario(null);
       setIsFormVisible(false);
     } catch (err) {
       setError("Erro ao atualizar usuário");
     }
   };
 
-  const handleDeleteUser = async (id: string) => {
+  const deletar = async (id: string) => {
     try {
-      await deleteUser(id);
+      await deletarUsuario(id);
       setMessage("Usuário removido com sucesso!");
-      await fetchUsers();
+      await fetchUsuarios();
     } catch (err) {
       setError("Erro ao excluir usuário");
     }
   };
 
-  const openEditForm = (user: User) => {
-    setSelectedUser(user);
+  const abrirForm = (usuario: Usuario) => {
+    setSelectedUsuario(usuario);
     setIsFormVisible(true);
   };
 
@@ -94,23 +92,23 @@ export default function HomePage() {
             <ActivityIndicator animating={true} size="large" />
           ) : (
             <>
-              <UserTable
-                users={users}
-                onEdit={openEditForm}
-                onDelete={handleDeleteUser}
+              <Tabela
+                usuarios={usuarios}
+                onEdit={abrirForm}
+                onDelete={deletar}
                 onAddNew={() => {
-                  setSelectedUser(null);
+                  setSelectedUsuario(null);
                   setIsFormVisible(true);
                 }}
               />
 
               {isFormVisible && (
-                <UserForm
-                  user={selectedUser}
-                  onSave={selectedUser ? handleEditUser : handleAddUser}
+                <Form
+                  usuario={selectedUsuario}
+                  onSave={selectedUsuario ? editar : adicionar}
                   onCancel={() => {
                     setIsFormVisible(false);
-                    setSelectedUser(null);
+                    setSelectedUsuario(null);
                   }}
                 />
               )}

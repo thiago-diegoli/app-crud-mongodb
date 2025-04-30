@@ -1,3 +1,4 @@
+import { Usuario } from "@/types/usuario";
 import React, { useState, useEffect } from "react";
 import { View, StyleSheet, Text } from "react-native";
 import {
@@ -8,42 +9,35 @@ import {
   SegmentedButtons,
 } from "react-native-paper";
 
-interface User {
-  _id?: string;
-  name: string;
-  idade: number;
-  sexo: string;
-}
-
-interface UserFormProps {
-  user?: User | null;
-  onSave: (id: string | undefined, userData: User) => void;
+interface FormProps {
+  usuario?: Usuario | null;
+  onSave: (id: string | undefined, usuarioData: Usuario) => void;
   onCancel: () => void;
 }
 
-const UserForm = ({ user, onSave, onCancel }: UserFormProps) => {
-  const [name, setName] = useState("");
+const Form = ({ usuario, onSave, onCancel }: FormProps) => {
+  const [nome, setNome] = useState("");
   const [idade, setIdade] = useState("");
   const [sexo, setSexo] = useState("");
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   useEffect(() => {
-    if (user) {
-      setName(user.name || "");
-      setIdade(user.idade ? String(user.idade) : "");
-      setSexo(user.sexo || "");
+    if (usuario) {
+      setNome(usuario.nome || "");
+      setIdade(usuario.idade ? String(usuario.idade) : "");
+      setSexo(usuario.sexo || "");
     } else {
-      setName("");
+      setNome("");
       setIdade("");
       setSexo("");
     }
-  }, [user]);
+  }, [usuario]);
 
   const validateForm = () => {
     const newErrors: { [key: string]: string } = {};
 
-    if (!name.trim()) {
-      newErrors.name = "Nome é obrigatório";
+    if (!nome.trim()) {
+      newErrors.nome = "Nome é obrigatório";
     }
 
     if (!idade.trim()) {
@@ -63,29 +57,29 @@ const UserForm = ({ user, onSave, onCancel }: UserFormProps) => {
   const handleSave = () => {
     if (!validateForm()) return;
 
-    const userData: User = {
-      name,
+    const usuarioData: Usuario = {
+      nome,
       idade: Number(idade),
       sexo,
     };
-    onSave(user?._id, userData);
+    onSave(usuario?._id, usuarioData);
   };
 
   return (
     <Card style={styles.card}>
       <Card.Content>
-        <Title>{user ? "Editar Usuário" : "Adicionar Usuário"}</Title>
+        <Title>{usuario ? "Editar Usuário" : "Adicionar Usuário"}</Title>
 
         <TextInput
           label="Nome"
-          value={name}
-          onChangeText={setName}
+          value={nome}
+          onChangeText={setNome}
           mode="outlined"
           style={styles.input}
-          error={!!errors.name}
+          error={!!errors.nome}
         />
-        {errors.name ? (
-          <Text style={styles.errorText}>{errors.name}</Text>
+        {errors.nome ? (
+          <Text style={styles.errorText}>{errors.nome}</Text>
         ) : null}
 
         <TextInput
@@ -106,9 +100,8 @@ const UserForm = ({ user, onSave, onCancel }: UserFormProps) => {
           value={sexo}
           onValueChange={setSexo}
           buttons={[
-            { value: "Masculino", label: "Masculino" },
-            { value: "Feminino", label: "Feminino" },
-            { value: "Outro", label: "Outro" },
+            { value: "M", label: "Masculino" },
+            { value: "F", label: "Feminino" },
           ]}
           style={styles.segmentedControl}
         />
@@ -125,7 +118,7 @@ const UserForm = ({ user, onSave, onCancel }: UserFormProps) => {
             Salvar
           </Button>
           <Button
-            mode="outlined"
+            mode="contained"
             onPress={onCancel}
             style={styles.cancelButton}
           >
@@ -163,7 +156,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#4CAF50",
   },
   cancelButton: {
-    borderColor: "#F44336",
+    backgroundColor: "#F44336",
   },
   errorText: {
     color: "#F44336",
@@ -171,4 +164,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default UserForm;
+export default Form;

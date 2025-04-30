@@ -1,22 +1,16 @@
+import { Usuario } from '@/types/usuario';
 import React from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
 import { DataTable, FAB, Card, Title, IconButton, Text } from 'react-native-paper';
 
-interface User {
-  _id: string;
-  name: string;
-  idade: number;
-  sexo: string;
-}
-
-interface UserTableProps {
-  users: User[];
-  onEdit: (user: User) => void;
+interface TabelaProps {
+  usuarios: Usuario[];
+  onEdit: (usuario: Usuario) => void;
   onDelete: (id: string) => void;
   onAddNew: () => void;
 }
 
-const UserTable = ({ users, onEdit, onDelete, onAddNew }: UserTableProps) => {
+const Tabela = ({ usuarios, onEdit, onDelete, onAddNew }: TabelaProps) => {
   return (
     <Card style={styles.card}>
       <Card.Content>
@@ -33,7 +27,7 @@ const UserTable = ({ users, onEdit, onDelete, onAddNew }: UserTableProps) => {
               <DataTable.Title>Ações</DataTable.Title>
             </DataTable.Header>
 
-            {users.length === 0 ? (
+            {usuarios.length === 0 ? (
               <DataTable.Row>
                 <DataTable.Cell>
                   <Text>Nenhum usuário cadastrado</Text>
@@ -43,23 +37,23 @@ const UserTable = ({ users, onEdit, onDelete, onAddNew }: UserTableProps) => {
                 <DataTable.Cell><Text> </Text></DataTable.Cell>
               </DataTable.Row>
             ) : (
-              users.map((user) => (
-                <DataTable.Row key={user._id}>
-                  <DataTable.Cell>{user.name}</DataTable.Cell>
-                  <DataTable.Cell>{user.idade}</DataTable.Cell>
-                  <DataTable.Cell>{user.sexo}</DataTable.Cell>
+              usuarios.map((usuario) => (
+                <DataTable.Row key={usuario._id}>
+                  <DataTable.Cell>{usuario.nome}</DataTable.Cell>
+                  <DataTable.Cell>{usuario.idade}</DataTable.Cell>
+                  <DataTable.Cell>{usuario.sexo}</DataTable.Cell>
                   <DataTable.Cell>
                     <View style={styles.actionsContainer}>
                       <IconButton 
                         icon="pencil" 
                         size={20} 
-                        onPress={() => onEdit(user)} 
+                        onPress={() => onEdit(usuario)} 
                         iconColor="#4CAF50"
                       />
                       <IconButton 
                         icon="delete" 
                         size={20} 
-                        onPress={() => onDelete(user._id)} 
+                        onPress={() => usuario._id && onDelete(usuario._id)} 
                         iconColor="#F44336"
                       />
                     </View>
@@ -108,4 +102,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default UserTable;
+export default Tabela;

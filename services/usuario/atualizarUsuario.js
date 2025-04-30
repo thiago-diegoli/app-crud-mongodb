@@ -1,13 +1,13 @@
 const API_URL = "http://192.168.56.1:3333";
 
-const updateUser = async (id, userData) => {
+const atualizarUsuario = async (id, dadosUsuarios) => {
   try {
     const response = await fetch(`${API_URL}/update/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(userData),
+      body: JSON.stringify(dadosUsuarios),
     });
 
     if (!response.ok) {
@@ -16,9 +16,9 @@ const updateUser = async (id, userData) => {
 
     return await response.json();
   } catch (error) {
-    console.error("Falha na requisição:", error);
+    console.error(error);
     throw error;
   }
 };
 
-export default updateUser;
+export default atualizarUsuario;
